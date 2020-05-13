@@ -1,40 +1,70 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
+import xhr from 'xhr';
 
-const API_KEY = "883e79e49fdf6a3421620c7268552355";
+const API_KEY = "82f40c24bce69950c7aa3d09e07b391b";
 
-class App extends Component {
-
+class App extends React.Component {
   state = {
-    location: ""
+      location: '',
+      data: {}
   };
-
-  fetchData = (event) =>{
-
-    event.preventDefault();
-    console.log(this.state.location);
-
-  };
-
-  changeLocation = (event) =>{
-
-    this.setState({
-      location: event.target.value
+  
+  fetchData = (evt) => {
+    evt.preventDefault();
+    
+    if (!API_KEY) {
+      console.log('Enter your API_KEY and the enter location');
+      return;
+    }
+    
+    let location = encodeURIComponent(this.state.location);
+    let urlPrefix = '/cors/http://api.openweathermap.org/data/2.5/forecast?q=';
+    let urlSuffix = '&APPID=' + API_KEY + '&units=metric';
+    let url = urlPrefix + location + urlSuffix;
+    
+    xhr({
+      url: url
+    }, (err, data) => {
+      if (err) {
+        console.log('Error:', err);
+        return;
+      }
+      
+      this.setState({
+        data: JSON.parse(data.body)
+      });
     });
   };
 
-  render()
-  {
+  changeLocation = (evt) => {
+    this.setState({
+      location: evt.target.value
+    });
+  };
 
-    
-
+  render() {
+    let currentTemp = 'Specify a location';
+    if (this.state.data.list) {
+      currentTemp = this.state.data.list[0].main.temp;
+    }
     return (
       <div>
-        <h1>Weather App</h1>
+        <h1>Weather</h1>
         <form onSubmit={this.fetchData}>
-          <label>To know weather , Please enter the info</label>
-          <input type="text" placeholder={"City, Country"} onChange={this.changeLocation} value={this.state.location}></input>
+          <label>I want to know the weather for
+            <input
+              placeholder={"City, Country"}
+              type="text"
+              value={this.state.location}
+              onChange={this.changeLocation}
+            />
+          </label>
         </form>
+        <p className="temp-wrapper">
+          <span className="temp">{ currentTemp }</span>
+          <span className="temp-symbol">°C</span>
+        </p>
       </div>
     );
   }
