@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import xhr from 'xhr';
+import Plot from 'Plot';
 
 const API_KEY = "82f40c24bce69950c7aa3d09e07b391b";
 
