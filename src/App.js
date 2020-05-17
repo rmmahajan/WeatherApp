@@ -1,14 +1,17 @@
 import React from 'react';
 import './App.css';
 import xhr from 'xhr';
-import Plot from 'Plot';
 
-const API_KEY = "82f40c24bce69950c7aa3d09e07b391b";
+import Plot from './Plot.js';
+
+const API_KEY = "883e79e49fdf6a3421620c7268552355";
 
 class App extends React.Component {
   state = {
       location: '',
-      data: {}
+      data: {},
+      dates: [],
+      temps: []
   };
   
   fetchData = (evt) => {
@@ -31,9 +34,19 @@ class App extends React.Component {
         console.log('Error:', err);
         return;
       }
-      
+      var body = JSON.parse(data.body);
+      var list = body.list;
+      var dates = [];
+      var temps = [];
+      for (var i = 0; i < list.length; i++) {
+        dates.push(list[i].dt_txt);
+        temps.push(list[i].main.temp);
+      }
+
       this.setState({
-        data: JSON.parse(data.body)
+        data: body,
+        dates: dates,
+        temps: temps
       });
     });
   };
@@ -66,6 +79,12 @@ class App extends React.Component {
           <span className="temp">{ currentTemp }</span>
           <span className="temp-symbol">°C</span>
         </p>
+        <h2>Forecast</h2>
+        <Plot
+      		xData={this.state.dates}
+          yData={this.state.temps}
+          type="scatter"
+        />
       </div>
     );
   }

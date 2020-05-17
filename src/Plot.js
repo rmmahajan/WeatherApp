@@ -1,7 +1,7 @@
 import React from 'react';
 
 class Plot extends React.Component {
-  componentDidMount() {
+  drawPlot = () => {
     Plotly.newPlot('plot', [{
       x: this.props.xData,
       y: this.props.yData,
@@ -16,6 +16,14 @@ class Plot extends React.Component {
     }, {
       displayModeBar: false
     });
+  }
+  
+  componentDidMount() {
+    this.drawPlot();
+  }
+
+  componentDidUpdate() {
+    this.drawPlot();
   }
 
   render() {
