@@ -1,15 +1,19 @@
-import ReactDOM from "react-dom";
-import { createStore } from "redux";
-import { Provider } from "react-redux";
+import ReactDOM from 'react-dom';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { Provider } from 'react-redux';
 
-import App from "./App";
-import mainReducer from "./reducers";
+import App from './App';
+import mainReducer from './reducers';
 
-let store = createStore(mainReducer);
+let store = createStore(
+  mainReducer,
+  applyMiddleware(thunkMiddleware));
+
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+  	<App />
   </Provider>,
-  document.getElementById("root")
+  document.getElementById('root')
 );

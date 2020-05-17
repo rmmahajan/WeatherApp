@@ -1,10 +1,17 @@
 import React from 'react';
 
 class Plot extends React.Component {
+  shouldComponentUpdate(nextProps) {
+		const xDataChanged = !this.props.xData.equals(nextProps.xData);
+		const yDataChanged = !this.props.yData.equals(nextProps.yData);
+
+		return xDataChanged || yDataChanged;
+	}
+  
   drawPlot = () => {
     Plotly.newPlot('plot', [{
-      x: this.props.xData,
-      y: this.props.yData,
+      x: this.props.xData.toJS(),
+      y: this.props.yData.toJS(),
       type: this.props.type
     }], {
       margin: {
@@ -16,6 +23,9 @@ class Plot extends React.Component {
     }, {
       displayModeBar: false
     });
+    
+    document.getElementById('plot').on(
+      'plotly_click', this.props.onPlotClick);
   }
   
   componentDidMount() {
@@ -27,6 +37,7 @@ class Plot extends React.Component {
   }
 
   render() {
+    console.log('RENDER PLOT');
     return (
       <div id="plot"></div>
     );
